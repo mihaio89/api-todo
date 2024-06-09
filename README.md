@@ -27,3 +27,7 @@ Entity Framework Core: EF Core is an ORM (Object-Relational Mapper) that allows 
 Registration: AddDbContext<TodoDb> registers the TodoDb context with the DI container.
 Configuration: opt.UseInMemoryDatabase("TodoList") configures the TodoDb context to use an in-memory database named "TodoList".
 Purpose: This setup enables the TodoDb context to be injected and used throughout the application, storing data in memory.
+
+# Samples
+
+https://github.com/dotnet/AspNetCore.Docs/tree/main/aspnetcore/tutorials/min-web-api/samples/8.x

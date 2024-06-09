@@ -35,9 +35,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGet("/greeting/en", () => "Hello World!");
-
 app.MapGet("/greeting/de", () => "Hallo Welt!");
-
 app.MapGet("/greeting/es", greeting_es);
 string greeting_es()
 {
@@ -91,6 +89,7 @@ app.MapDelete("/todoitems/{id}", async (int id, TodoDb db) =>
     return Results.NotFound(new { message = "Item not found to be deleted" });
 });
 
+
 var todos = app.MapGroup("/todos");
 
 todos.MapGet("/", async (TodoDb db) =>
@@ -109,5 +108,19 @@ todos.MapPut("/{id}", async (int id, TodoItem inputTodo, TodoDb db) =>
 
     return Results.NoContent();
 });
+
+todos.MapGet("/completed", GetCompletedTodos);
+static async Task<IResult> GetCompletedTodos(TodoDb db)
+{
+    return TypedResults.Ok(await db.TodoItems.Where(t => t.IsCompleted).ToListAsync());
+}
+
+todos.MapGet("/notcompleted", GetNotCompletedTodos);
+static async Task<IResult> GetNotCompletedTodos(TodoDb db)
+{
+    return TypedResults.Ok(await db.TodoItems.Where(t => !t.IsCompleted).ToListAsync());
+}
+
+
 
 app.Run();
