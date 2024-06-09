@@ -91,5 +91,23 @@ app.MapDelete("/todoitems/{id}", async (int id, TodoDb db) =>
     return Results.NotFound(new { message = "Item not found to be deleted" });
 });
 
+var todos = app.MapGroup("/todos");
+
+todos.MapGet("/", async (TodoDb db) =>
+    await db.TodoItems.ToListAsync());
+
+todos.MapPut("/{id}", async (int id, TodoItem inputTodo, TodoDb db) =>
+{
+    var todo = await db.TodoItems.FindAsync(id);
+
+    if (todo is null) return Results.NotFound();
+
+    todo.Description = inputTodo.Description;
+    todo.IsCompleted = inputTodo.IsCompleted;
+
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
 
 app.Run();
