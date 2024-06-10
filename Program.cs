@@ -89,11 +89,14 @@ app.MapDelete("/todoitems/{id}", async (int id, TodoDb db) =>
     return Results.NotFound(new { message = "Item not found to be deleted" });
 });
 
-
-var todos = app.MapGroup("/todos");
+//Use the MapGroup API
+var todos = app.MapGroup("/v2/todos");
 
 todos.MapGet("/", async (TodoDb db) =>
     await db.TodoItems.ToListAsync());
+
+todos.MapGet("/compl", async (TodoDb db) =>
+    await db.TodoItems.Where(t => t.IsCompleted).ToListAsync());
 
 todos.MapPut("/{id}", async (int id, TodoItem inputTodo, TodoDb db) =>
 {
@@ -109,6 +112,7 @@ todos.MapPut("/{id}", async (int id, TodoItem inputTodo, TodoDb db) =>
     return Results.NoContent();
 });
 
+//Use the TypedResults API
 todos.MapGet("/completed", GetCompletedTodos);
 static async Task<IResult> GetCompletedTodos(TodoDb db)
 {
@@ -120,7 +124,6 @@ static async Task<IResult> GetNotCompletedTodos(TodoDb db)
 {
     return TypedResults.Ok(await db.TodoItems.Where(t => !t.IsCompleted).ToListAsync());
 }
-
 
 
 app.Run();
